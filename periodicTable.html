@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07111f" />
+  <title>Periodic Table Project</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="periodicTable.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="site-header">
+      <div class="brand-card">
+        <div class="badge">Interactive Chemistry Reference</div>
+        <h1>Periodic Table of the Elements</h1>
+        <p>
+          A project-style periodic table with all 118 elements, live search, filters, theme switching, animated selection,
+          and a detail panel for chemistry facts.
+        </p>
+
+        <div class="header-stats">
+          <div class="stat-card">
+            <span class="value" id="totalCount">118</span>
+            <span class="label">Total elements in the table</span>
+          </div>
+          <div class="stat-card">
+            <span class="value" id="categoryCount">10 categories</span>
+            <span class="label">Color-coded element groups</span>
+          </div>
+          <div class="stat-card">
+            <span class="value" id="yearCount">1669 - 2016</span>
+            <span class="label">Discovery range shown as a project stat</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="theme-card">
+        <div>
+          <h2>Theme and Controls</h2>
+          <p>Use the filters, search, and theme toggle to explore the table like a real web app.</p>
+          <p>Shortcuts: <strong>/</strong> search, <strong>C</strong> compare, <strong>F</strong> favorite.</p>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <strong>Dark / Light</strong>
+            <p>Switch the entire project theme instantly.</p>
+          </div>
+          <button id="themeToggle" class="switch" type="button" aria-label="Toggle theme"></button>
+        </div>
+      </aside>
+    </section>
+
+    <div class="drawer-bar">
+      <div class="drawer-bar-copy">
+        <strong>Details panel</strong>
+        <span>Open the slide-out bar when you want more element information.</span>
+      </div>
+      <div class="drawer-actions">
+        <button id="infoToggle" class="drawer-toggle" type="button">Open element details</button>
+        <button id="compareToggle" class="drawer-toggle" type="button" aria-pressed="false">Add To Compare</button>
+        <button id="drawerCloseTop" class="drawer-close-inline" type="button" aria-label="Close details panel">Close</button>
+      </div>
+    </div>
+
+    <section class="layout">
+      <div>
+        <section class="section-card">
+          <div class="toolbar">
+            <div class="search-wrap">
+              <label class="search-box" aria-label="Search for an element">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4a6 6 0 1 0 3.87 10.58l4.27 4.27 1.41-1.41-4.27-4.27A6 6 0 0 0 10 4Zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/></svg>
+                <input id="searchInput" type="text" placeholder="Search by name, symbol, or number" autocomplete="off" />
+              </label>
+              <div id="suggestions" class="suggestions" aria-label="Search suggestions"></div>
+            </div>
+
+            <label class="filter">
+              <select id="filterCategory" aria-label="Filter by category">
+                <option value="all">All categories</option>
+              </select>
+            </label>
+            <label class="filter">
+              <select id="filterPeriod" aria-label="Filter by period">
+                <option value="all">All periods</option>
+              </select>
+            </label>
+            <label class="filter">
+              <select id="filterBlock" aria-label="Filter by block">
+                <option value="all">All blocks</option>
+              </select>
+            </label>
+            <label class="filter">
+              <select id="filterState" aria-label="Filter by state">
+                <option value="all">All states</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="status-row">
+            <div class="status" id="statusText">Showing all 118 elements</div>
+            <div id="resultPills" class="result-pill"></div>
+          </div>
+
+          <div class="table-wrap">
+            <div class="periodic-grid" id="periodicGrid" role="grid" aria-label="Periodic table elements"></div>
+          </div>
+        </section>
+
+        <section class="legend-card">
+          <h3 class="legend-title">Color Legend</h3>
+          <div class="legend" id="legend"></div>
+        </section>
+
+        <section class="compare-card" aria-live="polite">
+          <div class="compare-head">
+            <h3>Compare Elements</h3>
+            <button id="compareClear" class="compare-clear" type="button">Clear all</button>
+          </div>
+          <p class="compare-subtitle">Pick up to 3 elements and compare mass, block, electronegativity, and oxidation states.</p>
+          <p id="compareHint" class="compare-hint">Add at least 2 elements to start comparing.</p>
+          <div id="compareList" class="compare-list"></div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="sidebar-drawer" id="sidebarDrawer" aria-label="Element details panel">
+      <div class="drawer-head">
+        <div>
+          <div class="drawer-kicker">Element details</div>
+          <h2 id="infoName">Hydrogen</h2>
+        </div>
+        <div class="drawer-head-actions">
+          <button id="favoriteToggle" class="drawer-close drawer-favorite" type="button" aria-label="Favorite element">☆</button>
+          <button id="drawerClose" class="drawer-close" type="button" aria-label="Close details panel">×</button>
+        </div>
+      </div>
+
+      <section class="info-card" id="infoCard">
+        <div class="info-head">
+          <div>
+            <div id="infoSymbol" class="info-symbol">H</div>
+          </div>
+          <div class="info-symbol" id="infoCategory">Nonmetal</div>
+        </div>
+
+        <p class="info-description" id="infoDescription">
+          The first element on the table, selected by default. Click any element to inspect its chemistry data.
+        </p>
+
+        <div class="info-grid">
+          <div class="info-item"><span>Atomic Number</span><strong id="infoAtomic">1</strong></div>
+          <div class="info-item"><span>Atomic Mass</span><strong id="infoMass">1.008</strong></div>
+          <div class="info-item"><span>Group</span><strong id="infoGroup">1</strong></div>
+          <div class="info-item"><span>Period</span><strong id="infoPeriod">1</strong></div>
+          <div class="info-item"><span>Block</span><strong id="infoBlock">s-block</strong></div>
+          <div class="info-item"><span>State</span><strong id="infoState">Gas</strong></div>
+          <div class="info-item"><span>Electronegativity</span><strong id="infoEN">2.20</strong></div>
+          <div class="info-item"><span>Oxidation States</span><strong id="infoOx">+1, -1</strong></div>
+          <div class="info-item" style="grid-column: 1 / -1;"><span>Electron Configuration</span><strong id="infoConfig">1s1</strong></div>
+          <div class="info-item" style="grid-column: 1 / -1;"><span>Short Note</span><strong id="infoNote">Light nonmetal, first element in the table.</strong></div>
+        </div>
+      </section>
+    </aside>
+
+    <section class="compare-card favorites-card" aria-live="polite">
+      <div class="compare-head">
+        <h3>Favorites</h3>
+        <div class="quiz-actions">
+          <button id="favoritesExport" class="compare-clear" type="button">Export JSON</button>
+          <button id="favoritesImport" class="compare-clear" type="button">Import JSON</button>
+          <button id="favoritesClear" class="compare-clear" type="button">Clear all</button>
+        </div>
+      </div>
+      <p class="compare-subtitle">Press F to save the active element. Favorite elements stay here in your browser.</p>
+      <input id="favoritesImportFile" type="file" accept="application/json" hidden />
+      <div id="favoritesList" class="compare-list"></div>
+    </section>
+
+    <section class="compare-card quiz-card" aria-live="polite">
+      <div class="compare-head">
+        <h3>Quick Quiz</h3>
+        <div class="quiz-score" id="quizScore">Score: 0 / 0</div>
+      </div>
+      <p id="quizQuestion" class="compare-subtitle">Click Start Quiz to test yourself.</p>
+      <div class="quiz-meta">
+        <span id="quizTimer">Time: 15s</span>
+        <span id="quizStreak">Streak: 0</span>
+        <label class="quiz-settings" for="quizMode">
+          Mode:
+          <select id="quizMode" aria-label="Select quiz mode">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+            <option value="survival">Survival</option>
+          </select>
+        </label>
+        <label class="quiz-settings" for="quizLimit">
+          Questions:
+          <select id="quizLimit" aria-label="Select quiz length">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+          </select>
+        </label>
+      </div>
+      <div id="quizOptions" class="quiz-options"></div>
+      <div class="quiz-actions">
+        <button id="quizStart" class="compare-clear" type="button">Start Quiz</button>
+        <button id="quizRestart" class="compare-clear" type="button">Restart Quiz</button>
+        <button id="quizStop" class="compare-clear" type="button">Stop Quiz</button>
+        <button id="quizExportCsv" class="compare-clear" type="button">Export History CSV</button>
+        <button id="quizNext" class="compare-clear" type="button">Next Question</button>
+      </div>
+      <p id="quizFeedback" class="compare-hint" role="status" aria-live="polite">Answer the question after starting the quiz.</p>
+    </section>
+
+    <section class="compare-card quiz-card" aria-live="polite">
+      <div class="compare-head">
+        <h3>Quiz Analytics</h3>
+      </div>
+      <p class="compare-subtitle">Track your performance and improvement across sessions.</p>
+      <div class="quiz-meta">
+        <span id="quizAccuracy">Accuracy: 0%</span>
+        <span id="quizAvgTime">Avg Time: 0.0s</span>
+        <span id="quizMostMissed">Most Missed: N/A</span>
+        <span id="quizBestScore">Best: 0 / 0</span>
+      </div>
+      <p id="quizSessionSummary" class="compare-hint">Play a quiz to generate analytics.</p>
+    </section>
+
+    <footer class="footer-card">
+      <p><strong>Author:</strong> shezan2004</p>
+      <p><strong>Date:</strong> <span id="footerDate">April 4, 2026</span></p>
+      <p>Built with HTML, CSS, and JavaScript.</p>
+    </footer>
+  </main>
+
+  <script type="module" src="periodicTable.js"></script>
+</body>
+</html>
+

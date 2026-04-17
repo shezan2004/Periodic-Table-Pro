@@ -1,0 +1,10 @@
+{
+  "name": "Periodic Table Project",
+  "short_name": "PeriodicTable",
+  "start_url": "./periodicTable.html",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "description": "Interactive periodic table with quiz modes, analytics, and favorites.",
+  "icons": []
+}

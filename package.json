@@ -1,0 +1,10 @@
+{
+  "name": "periodic-table-project",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Interactive periodic table with quiz modes and analytics",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}
